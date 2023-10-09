@@ -129,7 +129,7 @@ export const Login = ({setPage}:{setPage:Function}) => {
                     />
                   </Form>
 
-                  <a onClick={ ()=> {setPage("2"); }} className={styles.Link}>Recovery password</a>
+                  {/* <a onClick={ ()=> {setPage("2"); }} className={styles.Link}>Recovery password</a> */}
                   <a onClick={ ()=> {setPage("3"); }} className={styles.Link}>Not have account? Sign Up</a>
                 </div>
               </>

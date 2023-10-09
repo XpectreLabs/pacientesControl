@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import { DataGrid } from '@mui/x-data-grid';
 import CircularProgress from '@mui/material/CircularProgress';
 import AddNewPatientModal from '@/components/organisms/AddNewPatientModal';
+import EditPatientModal from '@/components/organisms/EditPatientModal';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -36,6 +37,8 @@ export default function Patients() {
   const [textError,setTextError] = React.useState("");
 
   const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
+  const [isEditPatientModalOpen, setIsEditPatientModalOpen] = useState(false);
+  const [patientToEdit, setPatientToEdit] = useState({});
 
   function Logout() {
     localStorage.setItem('user_id', "");
@@ -286,6 +289,15 @@ export default function Patients() {
         isOpen={isAddPatientModalOpen}
         onClose={() => {
           setIsAddPatientModalOpen(false);
+          data();
+        }}
+      />
+
+      <EditPatientModal
+        patientData={patientToEdit}
+        isOpen={isEditPatientModalOpen}
+        onClose={() => {
+          setIsEditPatientModalOpen(false);
           data();
         }}
       />
