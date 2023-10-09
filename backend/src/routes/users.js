@@ -33,7 +33,7 @@ router.post('/', async (req, res, next) => {
     },
   });
   const token = generateAccessToken(jwt, newUser.user_id);
-  res.status(200).json({ message:"succes", user_id: newUser.user_id, token: token });
+  res.status(200).json({ message:"success", user_id: newUser.user_id, token: token });
 });
 
 router.get('/:userId',jwtV.verifyToken, async (req, res, next) => {
@@ -58,7 +58,7 @@ router.get('/:userId',jwtV.verifyToken, async (req, res, next) => {
           email: true,
         },
       });
-      res.status(200).json({ message:"succes", dataUser });
+      res.status(200).json({ message:"success", dataUser });
     }
     else
       res.status(400).json({ message:"Invalid id", error: "Invalid request, id does not exist" });
@@ -84,7 +84,7 @@ router.put('/',jwtV.verifyToken, async (req, res, next) => {
       email: req.body.email,
     },
   });
-  res.status(200).json({ message:"succes" });
+  res.status(200).json({ message:"success" });
 });
 
 
@@ -106,10 +106,10 @@ router.post('/email', async (req, res, next) => {
 
   if (users){
     mailer.enviar_mail("098776868",email);
-    res.status(200).json({ message:"succes" });
+    res.status(200).json({ message:"success" });
   }
   else
-    res.status(400).json({ message:"The Email is invalid" });
+    res.status(400).json({ message:"The email is not registered." });
 });
 
 

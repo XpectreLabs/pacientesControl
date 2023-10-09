@@ -15,6 +15,7 @@ export default function AddNewPatientModal({ isOpen, onClose }) {
   const [showAlert,setShowAlert] = React.useState(false);
   const [textError,setTextError] = React.useState("");
   const [initialValues, setInitialValues] = useState(({firstName:'',lastName:'', email:'', phone:'', ssn:''}));
+  const [typeOfMessage, setTypeOfMessage] = React.useState("error");
 
   return (
     <Formik
@@ -62,8 +63,10 @@ export default function AddNewPatientModal({ isOpen, onClose }) {
           .then((resp) => resp.json())
           .then(function(data) {
             setLoading(false);
+            setTypeOfMessage("error");
 
-            if(data.message==="succes") {
+            if(data.message==="success") {
+              setTypeOfMessage("success");
               setTextError("Data has been saved");
               setInitialValues(({firstName:'',lastName:'', email:' ', phone:'', ssn:''}));
               setShowAlert(true);
@@ -98,7 +101,7 @@ export default function AddNewPatientModal({ isOpen, onClose }) {
         }) => {
           return (
             <>
-              {showAlert?(<p className={`${styles.message} slideLeft`}><strong>Message:</strong><br />{textError}</p>):null}
+              {showAlert?(<p className={`${styles.message} ${typeOfMessage==="success"?styles.success:null} slideLeft`}><strong>Message:</strong><br />{textError}</p>):null}
 
               <Modal
                   open={isOpen}

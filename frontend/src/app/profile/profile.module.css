@@ -112,6 +112,10 @@
   right: 5px;
 }
 
+.message.success {
+  color: #083636;
+}
+
 .errors {
   margin-top: 15px;
   line-height: 21px;

@@ -9,6 +9,8 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Recovery } from '@/components/organisms/recovery';
 import { Signup } from "@/components/organisms/signup";
+import { ChangePassword } from "@/components/organisms/changePassword";
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -30,7 +32,7 @@ export default function Home() {
           </Grid>
           <Grid className={styles.Login} item xs={4}>
             <Item>
-              {page==="1"?<Login setPage={setPage} />:page==="2"?<Recovery setPage={setPage} />:<Signup setPage={setPage}/>}
+              {page==="1"?<Login setPage={setPage} />:page==="2"?<Recovery setPage={setPage} />:page==="3"?<Signup setPage={setPage}/>:<ChangePassword setPage={setPage} />}
             </Item>
           </Grid>
           <Grid item xs={4}>

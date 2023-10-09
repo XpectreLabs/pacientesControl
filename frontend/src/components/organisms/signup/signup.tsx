@@ -23,28 +23,28 @@ export const Signup = ({setPage}:{setPage:Function}) => {
           lastName: "",
           email:"",
           password: "",
-          passwordRepeat:"",
+          confirmPassword:"",
         }}
         validationSchema={Yup.object().shape({
           username: Yup.string()
-            .min(3, "The username is short")
+            .min(3, "The username have a minimum of 3 characters")
             .required("The username is requiered"),
           firstName: Yup.string()
-            .min(3, "The first name is short")
+            .min(3, "The first name must have a minimum of 3 characters.")
             .required("The first name is requiered"),
           lastName: Yup.string()
-            .min(3, "The last name is short")
+            .min(3, "The last name must have a minimum of 3 characters.")
             .required("The last name is requiered"),
           email: Yup.string()
             .email("The email es incorrect")
             .required("The email is requiered"),
           password: Yup.string()
-            .min(3, "The password is short")
+            .min(3, "The password must have a minimum of 3 characters.")
             .required("The password is requiered"),
-          passwordRepeat:  Yup.string()
-            .oneOf([Yup.ref('password')],"Passwords and password repeat must be the same")
-            .min(3, 'The password repeat is short')
-            .required("* The password repeat is requiered"),
+          confirmPassword:  Yup.string()
+            .oneOf([Yup.ref('password')],"Passwords and password repeat must be the same.")
+            .min(3, 'The confirm password must have a minimum of 3 characters.')
+            .required("* The confirm password is requiered."),
         })}
         onSubmit={(values, actions) => {
           const scriptURL = "http://localhost:3001/api/v1/users/";
@@ -67,7 +67,7 @@ export const Signup = ({setPage}:{setPage:Function}) => {
           .then(function(data) {
             setLoading(false);
 
-            if(data.message==="succes") {
+            if(data.message==="success") {
               setShowAlert(false);
               localStorage.setItem('user_id', JSON.stringify(data.user_id));
               localStorage.setItem('token',  data.token);
@@ -167,22 +167,22 @@ export const Signup = ({setPage}:{setPage:Function}) => {
                       placeholder="Repeat password"
                       type="Password"
                       required
-                      id="passwordRepeat"
-                      label="password repeat"
-                      name="passwordRepeat"
+                      id="confirmPassword"
+                      label="Confirm password"
+                      name="confirmPassword"
                       size="small"
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
 
                     <div>
-                        <p><strong>{(errors.username || errors.firstName || errors.lastName || errors.email || errors.password || errors.passwordRepeat)?`Errores:`:null}</strong></p>
+                        <p><strong>{(errors.username || errors.firstName || errors.lastName || errors.email || errors.password || errors.confirmPassword)?`Errores:`:null}</strong></p>
                         {errors.username? (<p>{errors.username}</p>):null}
                         {errors.firstName? (<p>{errors.firstName}</p>):null}
                         {errors.lastName? (<p>{errors.lastName}</p>):null}
                         {errors.email? (<p>{errors.email}</p>):null}
                         {errors.password? (<p>{errors.password}</p>):null}
-                        {errors.passwordRepeat? (<p>{errors.passwordRepeat}</p>):null}
+                        {errors.confirmPassword? (<p>{errors.confirmPassword}</p>):null}
                     </div>
 
                     <div>

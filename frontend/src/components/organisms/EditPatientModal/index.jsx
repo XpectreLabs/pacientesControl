@@ -16,8 +16,7 @@ export default function EditPatientModal({ isOpen, onClose,patientData,patientId
   const [showAlert,setShowAlert] = React.useState(false);
   const [textError,setTextError] = React.useState("");
   const [initialValues, setInitialValues] = useState(({firstName:'',lastName:'', email:' ', phone:'', ssn:''}));
-  
-
+  const [typeOfMessage, setTypeOfMessage] = React.useState("error");
 
   return (
     <Formik
@@ -64,8 +63,10 @@ export default function EditPatientModal({ isOpen, onClose,patientData,patientId
           .then((resp) => resp.json())
           .then(function(data) {
             setLoading(false);
+            setTypeOfMessage("error");
 
-            if(data.message==="succes") {
+            if(data.message==="success") {
+              setTypeOfMessage("success");
               setTextError("Data has been updated");
               setInitialValues(({firstName:'',lastName:'', email:' ', phone:'', ssn:''}));
               setShowAlert(true);
@@ -100,7 +101,7 @@ export default function EditPatientModal({ isOpen, onClose,patientData,patientId
         }) => {
           return (
             <>
-              {showAlert?(<p className={`${styles.message} slideLeft`}><strong>Message:</strong><br />{textError}</p>):null}
+              {showAlert?(<p className={`${styles.message} ${typeOfMessage==="success"?styles.success:null} slideLeft`}><strong>Message:</strong><br />{textError}</p>):null}
 
               <Modal
                   open={isOpen}

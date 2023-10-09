@@ -14,7 +14,7 @@ const schemaId = joi.object({
 
 const schemaUpdate = joi.object({
   user_id: joi.number().min(1).required(),
-  firstName: joi.string().pattern(new RegExp('^[a-zA-Z0-9 ]{4,100}$')).required(),
+  firstName: joi.string().pattern(new RegExp('^[a-zA-Z0-9 ]{3,100}$')).required(),
   lastName: joi.string().pattern(new RegExp('^[a-zA-Z0-9 ]{3,100}$')).required(),
   email: joi.string().email().required(),
 });

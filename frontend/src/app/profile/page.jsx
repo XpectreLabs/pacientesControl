@@ -32,7 +32,7 @@ export default function Profile() {
   const [textError,setTextError] = React.useState("");
   const [initialValues, setInitialValues] = useState(({firstName:'', lastName:'', email:''}));
   const [loadingData, setLoadingData] = React.useState(false);
-
+  const [typeOfMessage, setTypeOfMessage] = React.useState("error");
 
   function Logout() {
     localStorage.setItem('user_id', "");
@@ -55,7 +55,7 @@ export default function Profile() {
     })
     .then((resp) => resp.json())
     .then(function(data) {
-      if(data.message==="succes") {
+      if(data.message==="success") {
         setLoadingData(true);
         setInitialValues(({firstName:""+data.dataUser[0]['firstname'], lastName:data.dataUser[0]['lastname'], email:data.dataUser[0]['email']}));
         setShowAlert(false);
@@ -160,10 +160,12 @@ export default function Profile() {
           })
           .then((resp) => resp.json())
           .then(function(data) {
-            setLoading(false);            console.log(data);
+            setLoading(false);
             setShowAlert(true);
+            setTypeOfMessage("error");
 
-            if(data.message==="succes") {
+            if(data.message==="success") {
+              setTypeOfMessage("success");
               setTextError("Date edited👌");
               setShowAlert(true);
             }
@@ -178,7 +180,7 @@ export default function Profile() {
                 Logout();
               },3200)
             }
-            setTimeout(()=>{setShowAlert(false)},3000)
+            setTimeout(()=>{setShowAlert(false)},4000)
           })
           .catch(error => {
             console.log(error.message);
@@ -199,7 +201,7 @@ export default function Profile() {
               </Grid>
               <Grid item xs={10}>
                 <div className={styles.center}>
-                  {showAlert?(<p className={`${styles.message} slideLeft`}><strong>Message:</strong><br />{textError}</p>):null}
+                  {showAlert?(<p className={`${styles.message} ${typeOfMessage==="success"?styles.success:null} slideLeft`}><strong>Message:</strong><br />{textError}</p>):null}
 
                   <Form
                       name="form"

@@ -12,6 +12,7 @@ export const Recovery = ({setPage}:{setPage:Function}) => {
   const [loading, setLoading] = React.useState(false);
   const [showAlert,setShowAlert] = React.useState(false);
   const [textError,setTextError] = React.useState("");
+  const [typeOfMessage, setTypeOfMessage] = React.useState("error");
 
   return (
     <Formik
@@ -39,10 +40,13 @@ export const Recovery = ({setPage}:{setPage:Function}) => {
           .then((resp) => resp.json())
           .then(function(data) {
             setLoading(false);
+            setTypeOfMessage("error");
 
-            if(data.message==="succes") {
+            if(data.message==="success") {
+              setTypeOfMessage("success");
               setTextError("We have sent you an email");
               setShowAlert(true);
+              setTimeout(()=>{setPage(4)},3000)
             }
             else if(data.message==="schema") {
               setTextError(data.error);
@@ -68,7 +72,7 @@ export const Recovery = ({setPage}:{setPage:Function}) => {
         }) => {
           return (
           <>
-            <div  className='fadeIn'>
+            <div className='fadeIn'>
               <a onClick={ ()=> { setPage("1");} } className={styles.Link}>Back</a>
               <div>
                 <figure className={styles.Logo}>
@@ -76,7 +80,7 @@ export const Recovery = ({setPage}:{setPage:Function}) => {
                 </figure>
               </div>
 
-              {showAlert?(<p className={`${styles.message} slideLeft`}><strong>Message:</strong><br />{textError}</p>):null}
+              {showAlert?(<p className={`${styles.message} ${typeOfMessage==="success"?styles.success:null} slideLeft`}><strong>Message:</strong><br />{textError}</p>):null}
 
                 <Form
                   name="form"

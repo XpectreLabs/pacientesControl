@@ -1,13 +1,15 @@
 'use client';
+
 import React from "react";
 import TextField from '@mui/material/TextField';
-import styles from './login.module.css'
+import { Button } from '@mui/material';
+import styles from './changePassword.module.css';
 import { useRouter } from 'next/navigation';
 import { Formik, Form } from "formik";
 import CircularProgress from '@mui/material/CircularProgress';
 import * as Yup from "yup";
 
-export const Login = ({setPage}:{setPage:Function}) => {
+export const ChangePassword = ({setPage}:{setPage:Function}) => {
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const [showAlert,setShowAlert] = React.useState(false);
@@ -16,23 +18,27 @@ export const Login = ({setPage}:{setPage:Function}) => {
   return (
     <Formik
         initialValues={{
-          username: "",
+          recoveryCode: "",
           password: "",
+          confirmPassword:"",
         }}
         validationSchema={Yup.object().shape({
-          username: Yup.string()
-            .min(3, "The username is short")
-            .required("The username is requiered"),
-
+          recoveryCode: Yup.string()
+            .min(8, "The recovery code have a minimum of 8 characters")
+            .required("*The recovery code is requiered"),
           password: Yup.string()
-            .min(3, "The password is short")
-            .required("The password is requiered"),
+            .min(3, "The password must have a minimum of 3 characters.")
+            .required("*The password is requiered"),
+          confirmPassword:  Yup.string()
+            .oneOf([Yup.ref('password')],"Passwords and password repeat must be the same.")
+            .min(3, 'The confirm password must have a minimum of 3 characters.')
+            .required("* The confirm password is requiered."),
         })}
         onSubmit={(values, actions) => {
-          const scriptURL = "http://localhost:3001/api/v1/auth/login";
-          const username = values.username;
+          const scriptURL = "http://localhost:3001/api/v1/users/";
+          const recoveryCode = values.recoveryCode;
           const password = values.password;
-          const data = {username, password};
+          const data = { recoveryCode, password};
           setLoading(true);
 
           fetch(scriptURL, {
@@ -51,10 +57,6 @@ export const Login = ({setPage}:{setPage:Function}) => {
               localStorage.setItem('user_id', JSON.stringify(data.user_id));
               localStorage.setItem('token',  data.token);
               router.push("/patients")
-            }
-            else if(data.message==="Incorrect access data") {
-              setTextError(data.message);
-              setShowAlert(true);
             }
             else {
               setTextError(data.error);
@@ -76,7 +78,9 @@ export const Login = ({setPage}:{setPage:Function}) => {
         }) => {
           return (
             <>
-              <div  className='fadeIn'>
+              <div className='fadeIn'>
+                <a onClick={ ()=> { setPage("1");} } className={styles.Link}>Back</a>
+
                 <div>
                   <figure className={styles.Logo}>
                     <img src="https://assets.website-files.com/640e73434d6821d825eadf94/640e8406f661a7392010e264_Vectors-Wrapper.svg" alt="" />
@@ -85,37 +89,52 @@ export const Login = ({setPage}:{setPage:Function}) => {
 
                 {showAlert?(<p className={`${styles.message} slideLeft`}><strong>Error:</strong><br />{textError}</p>):null}
 
-                  <Form
-                      name="form"
-                      id="form"
-                      method="post"
-                      onSubmit={handleSubmit}
-                    >
+                <Form
+                  className={styles.form}
+                  name="form"
+                  id="form"
+                  method="post"
+                  onSubmit={handleSubmit}
+                >
                     <TextField
-                      placeholder="Username"
+                      placeholder="Recovery code"
                       required
-                      id="username"
-                      label="Username"
-                      name="username"
+                      id="recoveryCode"
+                      label="Recovery code"
+                      name="recoveryCode"
                       size="small"
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
                     <TextField
-                      placeholder="Password"
-                      type="password"
+                      placeholder="New password"
+                      type="Password"
                       required
                       id="password"
-                      label="Password"
+                      label="New password"
                       name="password"
                       size="small"
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
+
+                    <TextField
+                      placeholder="Repeat password"
+                      type="Password"
+                      required
+                      id="confirmPassword"
+                      label="Confirm password"
+                      name="confirmPassword"
+                      size="small"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+
                     <div>
-                        <p><strong>{(errors.username || errors.password)?`Errores:`:null}</strong></p>
-                        {errors.username? (<p>{errors.username}</p>):null}
+                        <p><strong>{(errors.recoveryCode || errors.firstName || errors.lastName || errors.email || errors.password || errors.confirmPassword)?`Errores:`:null}</strong></p>
+                        {errors.recoveryCode? (<p>{errors.recoveryCode}</p>):null}
                         {errors.password? (<p>{errors.password}</p>):null}
+                        {errors.confirmPassword? (<p>{errors.confirmPassword}</p>):null}
                     </div>
 
                     <div>
@@ -125,16 +144,13 @@ export const Login = ({setPage}:{setPage:Function}) => {
                     <input
                       className={styles.Btn}
                       type="submit"
-                      value="Login"
+                      value="Change"
                     />
                   </Form>
-
-                  <a onClick={ ()=> {setPage("2"); }} className={styles.Link}>Recovery password</a>
-                  <a onClick={ ()=> {setPage("3"); }} className={styles.Link}>Not have account? Sign Up</a>
                 </div>
               </>
-            );
-        }}
-    </Formik>
+              );
+          }}
+      </Formik>
   );
 };

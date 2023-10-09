@@ -63,7 +63,7 @@ export default function Patients() {
     .then((resp) => resp.json())
     .then(function(data) {
       console.log(data);
-      if(data.message==="succes") {
+      if(data.message==="success") {
         setLoadingData(true);
         setLoading(false);
         setPatients(data.listPatients);
@@ -108,7 +108,7 @@ export default function Patients() {
     .then((resp) => resp.json())
     .then(function(dataL) {
  
-      if(dataL.message==="succes") {
+      if(dataL.message==="success") {
         setTextError("The patient was eliminated");
         setShowAlert(true);
         data();

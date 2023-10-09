@@ -29,7 +29,7 @@ router.post('/',jwtV.verifyToken, async (req, res, next) => {
       active: 1,
     },
   });
-  res.status(200).json({ message:"succes" });
+  res.status(200).json({ message:"success" });
 });
 
 router.get('/:userId/patients',jwtV.verifyToken, async (req, res, next) => {
@@ -58,7 +58,7 @@ router.get('/:userId/patients',jwtV.verifyToken, async (req, res, next) => {
           date: true,
         },
       });
-      res.status(200).json({ message:"succes", listPatients });
+      res.status(200).json({ message:"success", listPatients });
     }
     else
       res.status(400).json({ message:"Invalid id", error: "Invalid request, id does not exist" });
@@ -86,7 +86,7 @@ router.put('/',jwtV.verifyToken, async (req, res, next) => {
       ssn: req.body.ssn,
     },
   });
-  res.status(200).json({ message:"succes"});
+  res.status(200).json({ message:"success"});
 });
 
 router.delete('/',jwtV.verifyToken, async (req, res, next) => {
@@ -105,7 +105,7 @@ router.delete('/',jwtV.verifyToken, async (req, res, next) => {
       active: 0,
     },
   });
-  res.status(200).json({ message:"succes"});
+  res.status(200).json({ message:"success"});
 });
 
 
