@@ -39,6 +39,7 @@ export default function Patients() {
   const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
   const [isEditPatientModalOpen, setIsEditPatientModalOpen] = useState(false);
   const [patientToEdit, setPatientToEdit] = useState({});
+  const [patientIdd, setPatientIdd] = useState(0);
 
   function Logout() {
     localStorage.setItem('user_id', "");
@@ -169,6 +170,7 @@ export default function Patients() {
       renderCell: (params) => (
         <CreateIcon
           onClick={() => {
+            setPatientIdd(params.row.id)
             setPatientToEdit(params.row);
             setIsEditPatientModalOpen(true);
           }}
@@ -294,6 +296,7 @@ export default function Patients() {
       />
 
       <EditPatientModal
+        patientIdd={patientIdd}
         patientData={patientToEdit}
         isOpen={isEditPatientModalOpen}
         onClose={() => {

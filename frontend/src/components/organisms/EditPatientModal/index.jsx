@@ -10,17 +10,19 @@ import { Formik, Form } from "formik";
 import CircularProgress from '@mui/material/CircularProgress';
 import * as Yup from "yup";
 
-export default function EditPatientModal({ isOpen, onClose,patientData }) {
+export default function EditPatientModal({ isOpen, onClose,patientData,patientIdd }) {
+  console.log(patientData);
   const [loading, setLoading] = React.useState(false);
   const [showAlert,setShowAlert] = React.useState(false);
   const [textError,setTextError] = React.useState("");
-  const [initialValues, setInitialValues] = useState(({firstName:patientData.firstName,lastName:patientData.lastName, email:patientData.email, phone:patientData.phone, ssn:patientData.ssn}));
-  const [patientId,setPatientId] = React.useState(patientData.id);
-  console.log(patientData);
+  const [initialValues, setInitialValues] = useState(({firstName:'',lastName:'', email:' ', phone:'', ssn:''}));
+  
+
+
   return (
     <Formik
         enableReinitialize={true}
-        initialValues={initialValues}
+        initialValues={{...patientData}}
         validationSchema={Yup.object().shape({
           firstName: Yup.string()
             .min(3, "The first name is short")
@@ -39,20 +41,19 @@ export default function EditPatientModal({ isOpen, onClose,patientData }) {
             .required("The ssn is requiered"),
         })}
         onSubmit={(values, actions) => {
-          const user_id = localStorage.getItem('user_id');
-          const scriptURL = "http://localhost:3001/api/v1/patients";
+          const id = localStorage.getItem('user_id');
+          const scriptURL = "http://localhost:3001/api/v1/patients/";
+          const patient_id = patientIdd;
           const firstName = values.firstName;
           const lastName = values.lastName;
           const email = values.email;
           const phone = values.phone+"";
           const ssn = values.ssn;
-          const data = {firstName, lastName, email, phone, ssn,user_id};
+          const data = {patient_id,firstName, lastName, email, phone, ssn,id};
           setLoading(true);
 
-          setInitialValues(({firstName:'',lastName:'', email:'', phone:'', ssn:''}));
-
           fetch(scriptURL, {
-            method: 'POST',
+            method: 'PUT',
             body: JSON.stringify(data),
             headers: {
               'Accept': 'application/json',
@@ -65,8 +66,8 @@ export default function EditPatientModal({ isOpen, onClose,patientData }) {
             setLoading(false);
 
             if(data.message==="succes") {
-              setTextError("Data has been saved");
-              setInitialValues(({hdId:'',firstName:'',lastName:'', email:' ', phone:'', ssn:''}));
+              setTextError("Data has been updated");
+              setInitialValues(({firstName:'',lastName:'', email:' ', phone:'', ssn:''}));
               setShowAlert(true);
 
               setTimeout(()=>{onClose();},2000)
