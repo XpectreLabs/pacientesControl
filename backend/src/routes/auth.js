@@ -20,6 +20,7 @@ router.post('/login', async (req, res, next) => {
 
     if (user > 0) {
       const token = generateAccessToken(jwt, user);
+      console.log(token)
       res.status(200).json({ message:"succes", user_id: user, token: token });
     } else {
       let messageError = 'Incorrect access data';

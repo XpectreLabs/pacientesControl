@@ -42,22 +42,26 @@ router.get('/:userId/patients',jwtV.verifyToken, async (req, res, next) => {
   if (req.params.userId !== null) {
     const id = req.params.userId;
 
-    const listPatients = await prisma.patients.findMany({
-      where: {
-        user_id: parseInt(id),
-        active: 1,
-      },
-      select: {
-        patient_id: true,
-        firstname: true,
-        lastname: true,
-        phone: true,
-        email: true,
-        ssn: true,
-        date: true,
-      },
-    });
-    res.status(200).json({ message:"succes", listPatients });
+    if(await validateUser(parseInt(id))) {
+      const listPatients = await prisma.patients.findMany({
+        where: {
+          user_id: parseInt(id),
+          active: 1,
+        },
+        select: {
+          patient_id: true,
+          firstname: true,
+          lastname: true,
+          phone: true,
+          email: true,
+          ssn: true,
+          date: true,
+        },
+      });
+      res.status(200).json({ message:"succes", listPatients });
+    }
+    else
+      res.status(400).json({ message:"Invalid id", error: "Invalid request, id does not exist" });
   }
 });
 
@@ -103,5 +107,22 @@ router.delete('/',jwtV.verifyToken, async (req, res, next) => {
   });
   res.status(200).json({ message:"succes"});
 });
+
+
+
+async function validateUser(user_id) {
+  const users = await prisma.users.findFirst({
+    where: {
+      user_id
+    },
+    select: {
+      user_id: true,
+    },
+  });
+
+  if (users == null) return false;
+
+  return true;
+}
 
 module.exports = router;

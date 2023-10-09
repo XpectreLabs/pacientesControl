@@ -44,19 +44,23 @@ router.get('/:userId',jwtV.verifyToken, async (req, res, next) => {
 
   if (req.params.userId !== null) {
     const id = req.params.userId;
-    console.log(id)
-    const dataUser = await prisma.users.findMany({
-      where: {
-        user_id: parseInt(id),
-      },
-      select: {
-        user_id: true,
-        firstname: true,
-        lastname: true,
-        email: true,
-      },
-    });
-    res.status(200).json({ message:"succes", dataUser });
+
+    if(await validateUser(parseInt(id))) {
+      const dataUser = await prisma.users.findMany({
+        where: {
+          user_id: parseInt(id),
+        },
+        select: {
+          user_id: true,
+          firstname: true,
+          lastname: true,
+          email: true,
+        },
+      });
+      res.status(200).json({ message:"succes", dataUser });
+    }
+    else
+      res.status(400).json({ message:"Invalid id", error: "Invalid request, id does not exist" });
   }
 });
 
@@ -81,5 +85,21 @@ router.put('/',jwtV.verifyToken, async (req, res, next) => {
   });
   res.status(200).json({ message:"succes" });
 });
+
+
+async function validateUser(user_id) {
+  const users = await prisma.users.findFirst({
+    where: {
+      user_id
+    },
+    select: {
+      user_id: true,
+    },
+  });
+
+  if (users == null) return false;
+
+  return true;
+}
 
 module.exports = router;
