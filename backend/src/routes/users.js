@@ -8,6 +8,7 @@ require('dotenv').config();
 const jwtV = require('../services/auth.js');
 const sch = require('../schemas/users.js');
 const fn = require('../services/users.js');
+const mailer = require('../templates/signup-mail');
 
 function generateAccessToken(user) {
   return jwt.sign({ user }, process.env.SECRET, { expiresIn: 60 * 60 * 24 });
@@ -84,6 +85,31 @@ router.put('/',jwtV.verifyToken, async (req, res, next) => {
     },
   });
   res.status(200).json({ message:"succes" });
+});
+
+
+
+router.post('/email', async (req, res, next) => {
+  const { error } = sch.schemaEmail.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message:"schema", error: error.details[0].message });
+  }
+  const email = req.body.email;
+  const users = await prisma.users.findFirst({
+    where: {
+      email
+    },
+    select: {
+      user_id: true,
+    },
+  });
+
+  if (users){
+    mailer.enviar_mail("098776868",email);
+    res.status(200).json({ message:"succes" });
+  }
+  else
+    res.status(400).json({ message:"The Email is invalid" });
 });
 
 

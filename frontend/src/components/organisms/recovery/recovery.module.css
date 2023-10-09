@@ -42,3 +42,16 @@
 .Link:hover {
   color: #0d5252;
 }
+
+.message {
+  width: 96%;
+  color: #b20707;
+  background-color: rgb(243 253 232 / 90%);
+  box-shadow: 0px 1px 2px 0px #083636;
+  font-size: 17px;
+  margin-bottom: 15px;
+  padding: 8px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}

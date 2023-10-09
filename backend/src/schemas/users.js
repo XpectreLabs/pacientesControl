@@ -19,4 +19,8 @@ const schemaUpdate = joi.object({
   email: joi.string().email().required(),
 });
 
-module.exports = { schemaCreate, schemaId, schemaUpdate}
+const schemaEmail = joi.object({
+  email: joi.string().email().required(),
+});
+
+module.exports = { schemaCreate, schemaId, schemaUpdate, schemaEmail}
