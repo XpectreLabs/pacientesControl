@@ -89,11 +89,10 @@ router.delete('/',jwtV.verifyToken, async (req, res, next) => {
   const { error } = sch.schemaIdPatient.validate(req.body);
   if (error) {
     console.log(error.details[0].message);
-    return res.status(400).json({ error: error.details[0].message });
+    return res.status(400).json({ message:"schema",error: error.details[0].message });
   }
 
   const id = parseInt(req.body.patient_id);
-  console.log("D:" + req.body.patient_id);
   await prisma.patients.update({
     where: {
       patient_id: parseInt(id),
@@ -102,7 +101,7 @@ router.delete('/',jwtV.verifyToken, async (req, res, next) => {
       active: 0,
     },
   });
-  res.json({ status: 'success' });
+  res.status(200).json({ message:"succes"});
 });
 
 module.exports = router;

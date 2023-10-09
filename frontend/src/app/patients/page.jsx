@@ -16,8 +16,7 @@ import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { useRouter } from 'next/navigation';
 import { DataGrid } from '@mui/x-data-grid';
 import CircularProgress from '@mui/material/CircularProgress';
-
-
+import AddNewPatientModal from '@/components/organisms/AddNewPatientModal';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -36,6 +35,8 @@ export default function Patients() {
   const [showAlert,setShowAlert] = React.useState(false);
   const [textError,setTextError] = React.useState("");
 
+  const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
+
   function Logout() {
     localStorage.setItem('user_id', "");
     localStorage.setItem('token', "");
@@ -44,7 +45,7 @@ export default function Patients() {
 
   function data() {
     const user_id = localStorage.getItem('user_id');
-    const scriptURL = "http://localhost:3001/api/v1/patients/"+user_id+"/patients";    
+    const scriptURL = "http://localhost:3001/api/v1/patients/"+user_id+"/patients";
 
     fetch(scriptURL, {
       method: 'GET',
@@ -62,7 +63,6 @@ export default function Patients() {
         setLoadingData(true);
         setLoading(false);
         setPatients(data.listPatients);
-        //setShowAlert(false);
       }
       else if(data.message==="schema") {
         setTextError(data.error);
@@ -82,6 +82,45 @@ export default function Patients() {
       setTimeout(()=>{
         setShowAlert(false);
       },3400)
+    })
+    .catch(error => {
+      console.log(error.message);
+      console.error('Error!', error.message);
+    });
+  }
+
+
+  function deletePatient(patientId) {
+    const scriptURL = "http://localhost:3001/api/v1/patients";
+    fetch(scriptURL, {
+      method: 'DELETE',
+      body: JSON.stringify({ patient_id: patientId }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer "+localStorage.getItem('token'),
+      },
+    })
+    .then((resp) => resp.json())
+    .then(function(dataL) {
+ 
+      if(dataL.message==="succes") {
+        setTextError("The patient was eliminated");
+        setShowAlert(true);
+        data();
+      }
+      else if(dataL.message==="schema") {
+        setTextError(data.error);
+        setShowAlert(true);
+      }
+      else {
+        setTextError(data.message);
+        setShowAlert(true);
+        setTimeout(()=>{
+          Logout();
+        },3200)
+      }
+      setTimeout(()=>{setShowAlert(false);},3000)
     })
     .catch(error => {
       console.log(error.message);
@@ -141,7 +180,7 @@ export default function Patients() {
       renderCell: (params) => (
         <DeleteIcon
           onClick={() => {
-            onDeletePatient(params.row.patient_id, params.row.firstName);
+            deletePatient(params.row.patient_id);
           }}
         />
       ),
@@ -228,11 +267,11 @@ export default function Patients() {
         initialState={{
           pagination: {
              paginationModel: {
-              pageSize: 5,
+              pageSize: 20,
             },
           },
         }}
-        pageSizeOptions={[5]}
+        pageSizeOptions={[20]}
         disableRowSelectionOnClick
       />
       {Object.keys(patients).length===0?<p className={styles.NoData}><strong>There is no data yet</strong></p>:null}
@@ -241,6 +280,18 @@ export default function Patients() {
       <div className={styles.ContentLoadding}>
         <CircularProgress  className={loading?'Loading show':'Loading'}/>
       </div>
+
+      <div>
+      <AddNewPatientModal
+        isOpen={isAddPatientModalOpen}
+        onClose={() => {
+          setIsAddPatientModalOpen(false);
+          data();
+        }}
+      />
+    </div>
+
+
     </main>
   );
 }

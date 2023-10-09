@@ -43,6 +43,10 @@ input {
   margin-bottom: 12px !important;
 }
 
+#formAddPatient .MuiTextField-root {
+  margin-bottom: 0px !important;
+}
+
 
 .MuiMenuItem-root.activo {
   color: #fff !important;
@@ -73,4 +77,15 @@ input {
 
 .MuiDataGrid-footerContainer {
   background: #f6f6f6 !important;
+}
+
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.MuiDataGrid-cell:focus  {
+  outline: 0px !important;
 }
