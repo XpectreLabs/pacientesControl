@@ -25,7 +25,7 @@ export const Recovery = ({setPage}:{setPage:Function}) => {
             .required("The email is requiered"),
         })}
         onSubmit={(values, actions) => {
-          const scriptURL = "http://localhost:3001/api/v1/users//email";
+          const scriptURL = "http://localhost:3001/api/v1/users/email";
           const email = values.email;
           const data = {email};
           setLoading(true);
@@ -43,6 +43,8 @@ export const Recovery = ({setPage}:{setPage:Function}) => {
             setTypeOfMessage("error");
 
             if(data.message==="success") {
+              console.log(data)
+              localStorage.setItem('id_user_change', JSON.stringify(data.user_id));
               setTypeOfMessage("success");
               setTextError("We have sent you an email");
               setShowAlert(true);

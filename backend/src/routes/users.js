@@ -106,10 +106,38 @@ router.post('/email', async (req, res, next) => {
 
   if (users){
     mailer.enviar_mail("098776868",email);
-    res.status(200).json({ message:"success" });
+    res.status(200).json({ message:"success","user_id":users.user_id });
   }
   else
     res.status(400).json({ message:"The email is not registered." });
+});
+
+
+router.put('/changePassword', async (req, res, next) => {
+  /*console.log(req.body);
+  const { error } = sch.schemaUpdate.validate(req.body);
+  if (error) {
+    console.log(error.details[0].message)
+    return res.status(400).json({ message:"schema", error: error.details[0].message });
+  }*/
+
+  if(req.body.recoveryCode === "098776868") {
+      const password = fn.getPasswordEncrypted(req.body.password);
+      console.log(password)
+      console.log("u"+req.body.id_user_change)
+      await prisma.users.update({
+        where: {
+          user_id: parseInt(req.body.id_user_change),
+        },
+        data: {
+          password: password
+        },
+      });
+      res.status(200).json({ message:"success" });
+  }
+  else {
+    res.status(400).json({ message:"The verification code does not exist" });
+  }
 });
 
 

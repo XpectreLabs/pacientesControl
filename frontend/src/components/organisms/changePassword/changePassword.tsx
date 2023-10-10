@@ -2,7 +2,6 @@
 
 import React from "react";
 import TextField from '@mui/material/TextField';
-import { Button } from '@mui/material';
 import styles from './changePassword.module.css';
 import { useRouter } from 'next/navigation';
 import { Formik, Form } from "formik";
@@ -14,7 +13,8 @@ export const ChangePassword = ({setPage}:{setPage:Function}) => {
   const [loading, setLoading] = React.useState(false);
   const [showAlert,setShowAlert] = React.useState(false);
   const [textError,setTextError] = React.useState("");
-
+  const [typeOfMessage, setTypeOfMessage] = React.useState("error");
+  //alert(localStorage.getItem('email_user'));
   return (
     <Formik
         initialValues={{
@@ -35,14 +35,15 @@ export const ChangePassword = ({setPage}:{setPage:Function}) => {
             .required("* The confirm password is requiered."),
         })}
         onSubmit={(values, actions) => {
-          const scriptURL = "http://localhost:3001/api/v1/users/";
+          const scriptURL = "http://localhost:3001/api/v1/users/changePassword";
           const recoveryCode = values.recoveryCode;
           const password = values.password;
-          const data = { recoveryCode, password};
+          const id_user_change = localStorage.getItem('id_user_change');
+          const data = { recoveryCode, id_user_change, password};
           setLoading(true);
 
           fetch(scriptURL, {
-            method: 'POST',
+            method: 'PUT',
             body: JSON.stringify(data),
             headers:{
               'Content-Type': 'application/json'
@@ -51,18 +52,23 @@ export const ChangePassword = ({setPage}:{setPage:Function}) => {
           .then((resp) => resp.json())
           .then(function(data) {
             setLoading(false);
+            setTypeOfMessage("error");
 
             if(data.message==="success") {
-              setShowAlert(false);
-              localStorage.setItem('user_id', JSON.stringify(data.user_id));
-              localStorage.setItem('token',  data.token);
-              router.push("/patients")
+              setTypeOfMessage("success");
+              setTextError("Password has been changed");
+              setShowAlert(true);
+              setTimeout(()=>{setPage("1")},3000)
             }
-            else {
+            else if(data.message==="schema") {
               setTextError(data.error);
               setShowAlert(true);
             }
-            setTimeout(()=>{setShowAlert(false)},3000)
+            else {
+              setTextError(data.message);
+              setShowAlert(true);
+            }
+            //setTimeout(()=>{setShowAlert(false)},3000)
           })
           .catch(error => {
             console.log(error.message);
@@ -87,7 +93,7 @@ export const ChangePassword = ({setPage}:{setPage:Function}) => {
                   </figure>
                 </div>
 
-                {showAlert?(<p className={`${styles.message} slideLeft`}><strong>Error:</strong><br />{textError}</p>):null}
+                {showAlert?(<p className={`${styles.message} ${typeOfMessage==="success"?styles.success:null} slideLeft`}><strong>Message:</strong><br />{textError}</p>):null}
 
                 <Form
                   className={styles.form}
@@ -131,7 +137,7 @@ export const ChangePassword = ({setPage}:{setPage:Function}) => {
                     />
 
                     <div>
-                        <p><strong>{(errors.recoveryCode || errors.firstName || errors.lastName || errors.email || errors.password || errors.confirmPassword)?`Errores:`:null}</strong></p>
+                        <p><strong>{(errors.recoveryCode || errors.password || errors.confirmPassword)?`Errores:`:null}</strong></p>
                         {errors.recoveryCode? (<p>{errors.recoveryCode}</p>):null}
                         {errors.password? (<p>{errors.password}</p>):null}
                         {errors.confirmPassword? (<p>{errors.confirmPassword}</p>):null}
